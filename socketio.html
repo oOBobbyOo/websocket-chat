@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>socket.io</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+</head>
+<body>
+
+<h1>Chat room</h1>
+<input type="text" id="sendTxt" />	
+<button id="sendBtn">Send</button>
+
+<script>
+  var socket = io('ws://localhost:3000');
+
+  function showMessage(str, type) {
+  	var div = document.createElement('div');		
+  	div.innerHTML = str;
+
+  	if(type == 'enter') {
+  		div.style.color = 'blue';
+  	} else if(type == 'leave') {
+  		div.style.color = 'red';
+  	}
+
+  	document.body.appendChild(div);
+  }
+
+  document.getElementById('sendBtn').onclick = function () {
+  	var txt = document.getElementById('sendTxt').value;
+  	if(txt)
+  		socket.emit('message', txt);
+  }
+
+  socket.on('enter', function(data) {
+  	showMessage(data, 'enter');
+  });
+
+  socket.on('leave', function(data) {
+  	showMessage(data, 'leave');
+  });
+
+  socket.on('message', function(data) {
+  	showMessage(data, 'message');
+  });
+</script>
+
+</body>
+</html>	
